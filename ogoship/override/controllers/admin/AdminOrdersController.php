@@ -96,15 +96,20 @@ class AdminOrdersController extends AdminOrdersControllerCore
 		}else{
 			$strMessage	=	'';
 		}
+		$countrySql = 'SELECT iso_code FROM '._DB_PREFIX_.'country WHERE id_country='.$shipping_address->id_country;
+		$countryRow = Db::getInstance()->getRow($countrySql);
+		$countryIsoCode = $countryRow['iso_code'];
 					
 		$order_api->setPriceTotal(round($order->getOrdersTotalPaid(), 2));
 		$order_api->setCustomerName($shipping_address->firstname.' '.$shipping_address->lastname);
 		$order_api->setCustomerAddress1($shipping_address->address1);
 		$order_api->setCustomerAddress2($shipping_address->address2);
 		$order_api->setCustomerCity($shipping_address->city);
-		$order_api->setCustomerCountry($shipping_address->country);
+		//$order_api->setCustomerCountry($shipping_address->country);
+		$order_api->setCustomerCountry($countryIsoCode);
+		$order_api->setCustomerCompany($shipping_address->company);
 		$order_api->setCustomerEmail($customer->email);
-		$order_api->setCustomerPhone($shipping_address->phone);
+		$order_api->setCustomerPhone($shipping_address->phone_mobile);
 		$order_api->setCustomerZip($shipping_address->postcode);
 		$order_api->setComments($strMessage);	
 		
