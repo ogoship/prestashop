@@ -150,6 +150,14 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   }
   
   /**
+   * Set price currency.
+   */
+  function setPriceCurrency($value)
+  {
+    $this->setAttribute('PriceCurrency', $value);
+  }
+  
+  /**
    * Warehouse will assign tracking number when available.
    */
   function getTrackingNumber()
@@ -172,7 +180,17 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   {
     $this->setAttribute('Comments', $value);
   }
-  
+
+  function getPickUpPointCode($value)
+  {
+      $this->getAttribute('PickUpPointCode', $value);
+  }
+
+  function setPickUpPointCode($value)
+  {
+      $this->setAttribute('PickUpPointCode', $value);
+  }
+
   /**
    * Set to true for testing purposes.
    * 
@@ -245,6 +263,22 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   function setCustomerCity($value)
   {
     $this->setAttribute("Customer::City", $value);
+  }
+  
+  /**
+   * Get company of customer.
+   */
+  function getCustomerCompany()
+  {
+    return $this->getAttribute("Customer::Company");
+  }
+  
+  /**
+   * Set company of customer.
+   */
+  function setCustomerCompany($value)
+  {
+    $this->setAttribute("Customer::Company", $value);
   }
   
   /**
@@ -354,6 +388,27 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   }
   
   /**
+   * Get price of products on order line.
+   */
+  function getOrderLinePrice($index)
+  {
+    return $this->getAttribute("OrderLines::OrderLine[$index]::UnitPrice");
+  }
+
+  /**
+   * Set Price of products on order line.
+   */
+  function setOrderLinePrice($index, $value)
+  {
+    $this->setAttribute("OrderLine[$index]::UnitPrice", $value);
+  }
+
+  function getOrderLines()
+  {
+    return $this->getAttribute('OrderLines');
+  }
+
+  /**
    * Get documents.
    * 
    * @return array Key-value pairs of document names and urls.
@@ -373,6 +428,38 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
     $this->setAttribute('Documents', $value);
     
     /// \todo If given when updating order then all documents will be replaced with the ones sent with update.
+  }
+  
+  /**
+   * Get url of document.
+   */
+  function getDocumentURL($index)
+  {
+    return $this->getAttribute("Documents::Document[$index]::URL");
+  }
+  
+  /**
+   * Set url of document.
+   */
+  function setDocumentURL($index,$value)
+  {
+    $this->setAttribute("Documents::Document[$index]::URL", $value);
+  }
+  
+  /**
+   * Get url of document.
+   */
+  function getDocumentType($index)
+  {
+    return $this->getAttribute("Documents::Document[$index]::Type");
+  }
+  
+  /**
+   * Set url of document.
+   */
+  function setDocumentType($index,$value)
+  {
+    $this->setAttribute("Documents::Document[$index]::Type", $value);
   }
 }
 

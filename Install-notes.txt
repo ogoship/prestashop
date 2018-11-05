@@ -1,14 +1,18 @@
 Installation Notes:
 ====================
-1) Login prestashop admin
-2) Navigate to "Modules and Services"
-3) Click "Add a new module" at top right corner
-4) Upload the ogoship.zip from the instllation packages and click "Upload this module" button
+1) Login prestashop admin.
+2) Navigate to "Modules and Services".
+3) Click "Add a new module" at top right corner.
+4) Upload the ogoship.zip from the installation packages and click "Upload this module" button.
 5) Move /override folder via ftp from the given installation package to store.
-6) Again navigate to "Modules and Services"=> "Other Modules", and search the module name "ogoship" and click install
+6) Again navigate to "Modules and Services"=> "Other Modules", and search the module name "ogoship" and click install.
 
 Cron File:
 ==========
 1) For update the get latest changes and stock, we can use the following cron file
 
 http://www.website.com/modules/ogoship/cron-ogoship.php
+
+
+2) For send the orders to Ogoship, we can use the following file.
+http://www.website.com/modules/ogoship/cron-ogoship-orders.php
