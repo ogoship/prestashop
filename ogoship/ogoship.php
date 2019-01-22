@@ -314,13 +314,6 @@ class Ogoship extends Module
 		$strOrderId = '';
 		$strOrderId = (int)Tools::getValue('id_order');		
 		
-		//if($_SERVER['REMOTE_ADDR']=='122.164.252.246'){
-			//print $strOrderId;
-			//print '<pre>';
-			//print_r($order_details);
-			//exit;
-		//}
-		
 		$index = 0;
 		$strCarriers = Carrier::getCarriers(Configuration::get('PS_LANG_DEFAULT'));
 		$id_order_carrier = Db::getInstance()->getValue('
@@ -359,15 +352,6 @@ class Ogoship extends Module
 			$strMessage	=	'';
 		}
 		
-		//print $strMessage;exit;
-		/*if($_SERVER['REMOTE_ADDR']=='122.164.252.246'){
-			print $siteUrl.'<br>';
-			print $strMessage.'<br>'.$strShippingCode.'<br>'.$strOrderShippingCode;
-			print '<pre>';
-			print_r($shipping_address);
-			exit;
-		}*/
-
 		if($id_order_carrier=='39'){
 			$username = "EOQEEH6VDE7PHQZVOS4XL9ZKH73V4TYA";
 			$password = "EOQEEH6VDE7PHQZVOS4XL9ZKH73V4TYA";
