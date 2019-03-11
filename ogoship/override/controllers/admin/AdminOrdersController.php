@@ -77,14 +77,22 @@ class AdminOrdersController extends AdminOrdersControllerCore
 		$strShippingCode	=	'MODULEOGOSHIP_SHIPPING_CODE_'.$id_order_carrier;
 				
 		$strOrderShippingCode = Configuration::get($strShippingCode);
-		
-		foreach($order_details as $key=>$value){
+        
+		// Order Invoice URL
+        $secure_key = Db::getInstance()->getValue('
+                SELECT `secure_key`
+                FROM `'._DB_PREFIX_.'orders`
+                WHERE `id_order`='.(int)Tools::getValue('id_order'));
+        $siteUrl = 'index.php?controller=pdf-invoice&id_order='.Tools::getValue('id_order').'&secure_key='.$secure_key;
+
+        foreach($order_details as $key=>$value){
 			$sql = 'SELECT export_to_ogoship FROM '._DB_PREFIX_.'product WHERE	id_product='.$value['product_id'];
 			$result = Db::getInstance()->query($sql);
 			$row = Db::getInstance()->getRow($sql);
 			if($row['export_to_ogoship']==0){
 				$order_api->setOrderLineCode( $index, ($value['product_reference']) );
-				$order_api->setOrderLineQuantity( $index, ($value['product_quantity']));
+                $order_api->setOrderLineQuantity( $index, ($value['product_quantity']));
+                $order_api->setOrderLinePrice( $index, ($value['unit_price_tax_incl']) );
 				$index++;
 			}
 		}
@@ -100,7 +108,9 @@ class AdminOrdersController extends AdminOrdersControllerCore
 		$countryRow = Db::getInstance()->getRow($countrySql);
 		$countryIsoCode = $countryRow['iso_code'];
 					
-		$order_api->setPriceTotal(round($order->getOrdersTotalPaid(), 2));
+        $order_api->setPriceTotal(round($order->getOrdersTotalPaid(), 2));
+        $currency = new Currency($order->id_currency);
+        $order_api->setPriceCurrency($currency->iso_code);
 		$order_api->setCustomerName($shipping_address->firstname.' '.$shipping_address->lastname);
 		$order_api->setCustomerAddress1($shipping_address->address1);
 		$order_api->setCustomerAddress2($shipping_address->address2);
@@ -112,7 +122,14 @@ class AdminOrdersController extends AdminOrdersControllerCore
 		$order_api->setCustomerPhone($shipping_address->phone_mobile);
 		$order_api->setCustomerZip($shipping_address->postcode);
 		$order_api->setComments($strMessage);	
-		
+
+        if(!empty($secure_key))
+        {
+            $baseUri = Tools::getHttpHost(true).__PS_BASE_URI__;
+            $order_api->setDocumentType('1', 'receipt');
+		    $order_api->setDocumentURL('1', $baseUri . $siteUrl);		
+        }
+
 		$order_api->setShipping($strOrderShippingCode);
       if ( $order_api->save() ) {
 		 $this->confirmations[] = 'Order successfully transferred to Ogoship.';
