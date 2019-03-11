@@ -8,7 +8,7 @@ class Ogoship extends Module
   {
     $this->name = 'ogoship';
     $this->tab = 'shipping_logistics';
-    $this->version = '1.1.2';
+    $this->version = '1.1.3';
     $this->author = 'OGOship';
     $this->need_instance = 0;
     $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_); 
@@ -352,28 +352,28 @@ class Ogoship extends Module
 			$strMessage	=	'';
 		}
 		
-		if($id_order_carrier=='39'){
-			$username = "EOQEEH6VDE7PHQZVOS4XL9ZKH73V4TYA";
-			$password = "EOQEEH6VDE7PHQZVOS4XL9ZKH73V4TYA";
+		// if($id_order_carrier=='39'){
+		// 	$username = "EOQEEH6VDE7PHQZVOS4XL9ZKH73V4TYA";
+		// 	$password = "EOQEEH6VDE7PHQZVOS4XL9ZKH73V4TYA";
 			
-			$getSiteUrl = Tools::getHttpHost(true).__PS_BASE_URI__;
+		// 	$getSiteUrl = Tools::getHttpHost(true).__PS_BASE_URI__;
 			
-			$url = $getSiteUrl.'api/orders/'.$strOrderId;
+		// 	$url = $getSiteUrl.'api/orders/'.$strOrderId;
 			
-			$context = stream_context_create(array (
-				'http' => array (
-					'header' => 'Authorization: Basic ' . base64_encode("$username:$password")
-				)
-			));
+		// 	$context = stream_context_create(array (
+		// 		'http' => array (
+		// 			'header' => 'Authorization: Basic ' . base64_encode("$username:$password")
+		// 		)
+		// 	));
 			
-			$data = file_get_contents($url, false, $context);
-			$xml = simplexml_load_string($data); 
-			$strPupCode	= (string)$xml->order->associations->pickup_locations->pickup_location->pup_code;
-			$strPupCode = str_replace("<![CDATA[","",$strPupCode);
-			$strPupCode = str_replace("]]>","",$strPupCode);
-		} else {
-			$strPupCode	= '';
-		}		
+		// 	$data = file_get_contents($url, false, $context);
+		// 	$xml = simplexml_load_string($data); 
+		// 	$strPupCode	= (string)$xml->order->associations->pickup_locations->pickup_location->pup_code;
+		// 	$strPupCode = str_replace("<![CDATA[","",$strPupCode);
+		// 	$strPupCode = str_replace("]]>","",$strPupCode);
+		// } else {
+		// 	$strPupCode	= '';
+		// }		
 		
 		$countrySql = 'SELECT iso_code FROM '._DB_PREFIX_.'country WHERE id_country='.$shipping_address->id_country;
 		$countryRow = Db::getInstance()->getRow($countrySql);
