@@ -16,7 +16,7 @@ class Ogoship extends Module
  	
 	$this->merchantID = Configuration::get('MODULEOGOSHIP_MERCHANT_ID');
 	$this->secretToken = Configuration::get('MODULEOGOSHIP_SECRET_TOKEN');
-	$this->api = new NettivarastoAPI($this->merchantID, $this->secretToken);
+	$this->api = new NettivarastoAPI($this->merchantID, $this->secretToken, "Prestashop " . $this->version);
 		
     parent::__construct();
  
