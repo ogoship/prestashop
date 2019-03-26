@@ -8,7 +8,7 @@ class Ogoship extends Module
   {
     $this->name = 'ogoship';
     $this->tab = 'shipping_logistics';
-    $this->version = '1.1.3';
+    $this->version = '1.1.4';
     $this->author = 'OGOship';
     $this->need_instance = 0;
     $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_); 
@@ -391,14 +391,14 @@ class Ogoship extends Module
 		$order_api->setCustomerPhone($shipping_address->phone_mobile);
 		$order_api->setCustomerZip($shipping_address->postcode);
 		$order_api->setComments($strMessage);		
-		$order_api->setShipping($strOrderShippingCode);
+        $order_api->setShipping($strOrderShippingCode);
 		
 		if(!empty($strPupCode)){
 			$order_api->setPickUpPointCode($strPupCode);
 		}
 		
-		/*$order_api->setDocumentType('receipt');*/
-		$order_api->setDocumentURL('1',$siteUrl);		
+		$order_api->setDocumentType(0, 'receipt');
+		$order_api->setDocumentURL(0,$siteUrl);		
 
         if ( $order_api->save() ) {
 			$this->confirmations[] = 'Order successfully transferred to Ogoship.';
