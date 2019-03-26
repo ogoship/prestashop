@@ -9,6 +9,8 @@ class NettivarastoAPI_RESTclient
   private $getParameters = array();
   private $dataArray = array();
   private $json = true;
+  private $restClientVersion = "OGOshipPHP/1.3";
+  private $pluginVersion = '?';
   
   function __construct(NettivarastoAPI $api, $method, $url, $shaParameters)
   {
@@ -16,6 +18,10 @@ class NettivarastoAPI_RESTclient
     $this->method = $method;
     $this->url = $url;
     $this->shaParameters = $shaParameters;
+  }
+  function setVersion($version)
+  {
+      $this->pluginVersion = $version;
   }
   
   function addGetParameter($key, $value)
@@ -46,15 +52,6 @@ class NettivarastoAPI_RESTclient
     // Clear old error messages.
     $this->api->setError('');
     
-    // Open HTTP-connection.
-    $ip = 'service.nettivarasto.fi';
-    $fp = @fsockopen($ip, 80, $errno, $errstr, 5);
-    $result = '';
-    if (!$fp)
-    {
-      return false;
-    }
-
     // Remove '/' from the end of url.
     if ($this->url[strlen($this->url) - 1] == '/')
     {
@@ -68,6 +65,48 @@ class NettivarastoAPI_RESTclient
     foreach ($this->getParameters as $key => $value)
     {
       $this->url .= '&' . urlencode($key) . '=' . urlencode($value);
+    }
+
+    // Create HTTPS-request.
+    $context = stream_context_create(array(
+        'http' => array(
+            'header' => "Content-type: application/json\r\nConnection: close\r\n"
+            . "User-Agent: " . $this->restClientVersion . " (" . $this->pluginVersion . ")\r\n" ,
+            'method' => $this->method,
+            'content' => json_encode($this->dataArray)
+        ),
+        'ssl' => array(
+            'peer_name' => "my.ogoship.com",
+            'SNI_enabled' => true,
+            'verify_peer' => true,
+            'verify_peer_name' => true,
+            'verify_depth' => 5,
+            'ciphers' => 'HIGH:!SSLv2:!SSLv3',
+            'disable_compression' => true,
+            'cafile' => __DIR__ . '/ca.pem',
+        )
+    ));
+    try{
+        // do the request
+        $data = file_get_contents("https://my.ogoship.com" . $this->url, false, $context);
+        if($data === FALSE){
+            goto FALLBACK;
+        }
+        goto FINISH;
+     } catch(Exception $err)
+    {
+        $this->api->setError(print_r($err, true)); 
+        goto FALLBACK;
+    }
+FALLBACK:
+
+    // Open HTTP-connection.
+    $ip = 'my.ogoship.com';
+    $fp = @fsockopen($ip, 80, $errno, $errstr, 5);
+    $result = '';
+    if (!$fp)
+    {
+      return false;
     }
 
     // Create HTTP-request.
@@ -107,11 +146,6 @@ class NettivarastoAPI_RESTclient
     {
       $out .= $data;
     }
-
-    /// \todo REMOVE
-    ///echo '<div style="display: none">$out = ';
-    ///print_r($out);
-    ///echo "</div>\n";
     
     // Send HTTP-request.
     if (@fwrite($fp, $out) === false)
@@ -124,10 +158,6 @@ class NettivarastoAPI_RESTclient
       $result .= fgets($fp, 128);
     }
     @fclose($fp);
-
-    /// \todo REMOVE
-//    print_r($result);
-    //return;
 
     // Extract data from HTTP-response.
     $header = true;
@@ -148,6 +178,7 @@ class NettivarastoAPI_RESTclient
       return false;
     }
 
+FINISH:
     // Response data type.
     if ($this->json)
     {
@@ -158,9 +189,6 @@ class NettivarastoAPI_RESTclient
       {
         return false;
       }
-
-      /// \todo REMOVE
-      //print_r($data);
 
       if (is_array($jsonData) &&
           array_key_exists('Response', $jsonData) &&
