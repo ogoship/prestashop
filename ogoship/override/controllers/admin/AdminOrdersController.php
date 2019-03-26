@@ -126,8 +126,8 @@ class AdminOrdersController extends AdminOrdersControllerCore
         if(!empty($secure_key))
         {
             $baseUri = Tools::getHttpHost(true).__PS_BASE_URI__;
-            $order_api->setDocumentType('1', 'receipt');
-		    $order_api->setDocumentURL('1', $baseUri . $siteUrl);		
+            $order_api->setDocumentType(0, 'receipt');
+		    $order_api->setDocumentURL(0, $baseUri . $siteUrl);		
         }
 
 		$order_api->setShipping($strOrderShippingCode);
