@@ -339,6 +339,7 @@ class Ogoship extends Module
 			if($row['export_to_ogoship']==0){
 				$order_api->setOrderLineCode( $index, ($value['product_reference']) );
 				$order_api->setOrderLineQuantity( $index, ($value['product_quantity']));
+                $order_api->setOrderLinePrice( $index, ($value['unit_price_tax_incl']) );
 				$index++;
 			}
 		}
