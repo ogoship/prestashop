@@ -8,7 +8,7 @@ class Ogoship extends Module
   {
     $this->name = 'ogoship';
     $this->tab = 'shipping_logistics';
-    $this->version = '1.1.4';
+    $this->version = '1.1.5';
     $this->author = 'OGOship';
     $this->need_instance = 0;
     $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_); 
@@ -173,6 +173,7 @@ class Ogoship extends Module
   	$latest = $this->api->latestChanges($latestProducts, $latestOrders);
 	if($latestOrders) {
 		foreach($latestOrders as $latestOrder) {
+            unset($strOrderIdByRef);
 			$strOrderId = $latestOrder->getReference();
 			$query_get_id= "SELECT id_order FROM `"._DB_PREFIX_."orders` WHERE reference='".$strOrderId."'";
 			if ($row = Db::getInstance()->getRow($query_get_id))
